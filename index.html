@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bem Cuidar</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="header">
+      <div class="profile">
+        <div class="avatar">JD</div>
+        <div>
+          <p>Olá, bem-vindo</p>
+          <h1>John Doe</h1>
+        </div>
+      </div>
+      <div class="date-time-row">
+        <span id="dateDisplay" class="date-display"></span>
+        <span id="timeDisplay" class="time-display"></span>
+      </div>
+    </header>
+
+    <section id="homeSection" class="content-section">
+      <section class="schedule-card">
+        <div class="schedule-top">
+          <div>
+            <p class="date-small">Data</p>
+            <h2 id="currentDateLabel">11 Quarta-feira</h2>
+          </div>
+          <div class="schedule-time">
+            <p class="date-small">Horário</p>
+            <span id="currentTimeLabel">16:04</span>
+          </div>
+        </div>
+        <p id="scheduleMedicineLabel" class="schedule-medicine-label"></p>
+        <div class="weekday-bar" id="weekdayBar"></div>
+        <div class="time-bar" id="timeBar"></div>
+      </section>
+
+      <section class="medicines-section">
+        <h2>Remédios em estoque</h2>
+        <div id="medicineList" class="medicine-list"></div>
+        <div class="search-box">
+          <input id="searchInput" type="search" placeholder="Buscar remédio" />
+        </div>
+      </section>
+    </section>
+
+    <section id="profileSection" class="content-section hidden">
+      <div class="section-card">
+        <h2>Meu Perfil</h2>
+        <p>Veja seus dados e preferências daqui.</p>
+        <div class="profile-detail">
+          <p><strong>Nome:</strong> John Doe</p>
+          <p><strong>Plano:</strong> Padrão</p>
+          <p><strong>Contatos:</strong> +55 11 99999-9999</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="agendaSection" class="content-section hidden">
+      <div class="section-card">
+        <div class="agenda-header">
+          <div>
+            <h2>Agenda deste mês</h2>
+            <p id="agendaMonthLabel"></p>
+          </div>
+        </div>
+        <div id="calendar" class="calendar"></div>
+        <div id="selectedDayInfo" class="selected-day-info"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-target="homeSection">Início</button>
+    <button class="nav-item" data-target="profileSection">Perfil</button>
+    <button class="nav-item" data-target="agendaSection">Agenda</button>
+  </nav>
+
+  <template id="medicineCardTemplate">
+    <article class="medicine-card">
+      <div class="medicine-emoji">💊</div>
+      <div class="medicine-content">
+        <strong class="medicine-name"></strong>
+        <span class="medicine-stock"></span>
+      </div>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>

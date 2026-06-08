@@ -1,0 +1,365 @@
+:root {
+  color-scheme: light;
+  font-size: 16px;
+  font-family: Inter, sans-serif;
+  --bg: #eef3ff;
+  --card: #f4f7ff;
+  --primary: #1f5de8;
+  --primary-soft: #e8eeff;
+  --text: #1b2737;
+  --muted: #6b7a99;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #e8edff 0%, #f7fbff 100%);
+  color: var(--text);
+}
+
+body, input, button {
+  font: inherit;
+}
+
+.app-shell {
+  max-width: 420px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 24px 20px 100px;
+}
+
+.header {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--primary);
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.profile p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.profile h1 {
+  margin: 4px 0 0;
+  font-size: 1.2rem;
+}
+
+.date-time-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--card);
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+
+.date-display,
+.time-display {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.date-display {
+  font-size: 0.95rem;
+}
+
+.time-display {
+  font-size: 1.05rem;
+}
+
+.schedule-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.schedule-top h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.schedule-time {
+  text-align: right;
+}
+
+.date-small {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.schedule-medicine-label {
+  margin: 0 0 18px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.selected-day-info {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 12px 24px rgba(31, 93, 232, 0.08);
+  color: var(--text);
+}
+
+.search-box {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 12px 16px;
+  margin-top: 18px;
+}
+
+.search-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.weekday-bar {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.weekday-item {
+  border: none;
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px 8px;
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(31, 93, 232, 0.06);
+  cursor: pointer;
+}
+
+.weekday-item span {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.weekday-item.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.time-bar {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.time-slot {
+  padding: 14px 0;
+  background: #fff;
+  border-radius: 16px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(31, 93, 232, 0.06);
+}
+
+.time-slot.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.schedule-card,
+.section-card {
+  background: var(--card);
+  border-radius: 26px;
+  padding: 22px;
+  margin-bottom: 22px;
+}
+
+.schedule-label {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.medicines-section h2 {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+}
+
+.medicine-list {
+  display: grid;
+  gap: 14px;
+}
+
+.medicine-card {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 14px 32px rgba(31, 93, 232, 0.07);
+}
+
+.medicine-emoji {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #dbe6ff, #ffffff);
+  font-size: 1.5rem;
+}
+
+.medicine-name {
+  font-size: 1rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.medicine-stock {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.calendar-day,
+.calendar-header {
+  text-align: center;
+  padding: 10px 6px;
+  border-radius: 14px;
+}
+
+.calendar-header {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.calendar-day {
+  background: white;
+  color: var(--text);
+  box-shadow: 0 10px 18px rgba(31, 93, 232, 0.05);
+  cursor: pointer;
+}
+
+.calendar-day.marked-day {
+  border: 2px solid var(--primary);
+}
+
+.calendar-day.today {
+  background: var(--primary);
+  color: white;
+}
+
+.calendar-day:hover {
+  transform: translateY(-2px);
+  transition: transform 0.15s ease;
+}
+
+.profile-detail p {
+  margin: 10px 0;
+  color: var(--text);
+}
+
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.agenda-header h2 {
+  margin: 0 0 6px;
+}
+
+.agenda-header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.hidden {
+  display: none;
+}
+
+.content-section {
+  display: block;
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px 20px;
+  background: linear-gradient(180deg, transparent 0%, #f7fbff 40%, #ffffff 100%);
+}
+
+.nav-item {
+  flex: 1;
+  border: none;
+  background: #f4f7ff;
+  border-radius: 18px;
+  padding: 14px 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.nav-item.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .app-shell {
+    padding: 18px 14px 108px;
+  }
+
+  .week-days {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
