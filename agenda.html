@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda - Bem Cuidar</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="header">
+      <div class="profile">
+        <div class="avatar">JD</div>
+        <div>
+          <p>Olá, bem-vindo</p>
+          <h1>John Doe</h1>
+        </div>
+      </div>
+      <div class="date-time-row">
+        <span id="dateDisplay" class="date-display"></span>
+        <span id="timeDisplay" class="time-display"></span>
+      </div>
+    </header>
+
+    <section class="content-section">
+      <div class="section-card">
+        <div class="agenda-header">
+          <div>
+            <h2>Próximas Tomadas</h2>
+            <p id="agendaLabel"></p>
+          </div>
+        </div>
+        <div id="upcomingMedicines" class="medicine-grid"></div>
+      </div>
+
+      <div class="section-card">
+        <h2>Histórico de Medicamentos</h2>
+        <div id="medicinesList" class="medicine-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">Início</a>
+    <a href="profile.html" class="nav-item">Perfil</a>
+    <a href="agenda.html" class="nav-item active">Agenda</a>
+  </nav>
+
+  <script src="js/shared.js"></script>
+  <script src="js/agenda.js"></script>
+</body>
+</html>

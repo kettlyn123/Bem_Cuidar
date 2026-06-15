@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bem Cuidar</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Bem Cuidar - Meus Remédios</title>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <main class="app-shell">
@@ -22,74 +22,107 @@
       </div>
     </header>
 
-    <section id="homeSection" class="content-section">
-      <section class="schedule-card">
-        <div class="schedule-top">
-          <div>
-            <p class="date-small">Data</p>
-            <h2 id="currentDateLabel">11 Quarta-feira</h2>
-          </div>
-          <div class="schedule-time">
-            <p class="date-small">Horário</p>
-            <span id="currentTimeLabel">16:04</span>
-          </div>
-        </div>
-        <p id="scheduleMedicineLabel" class="schedule-medicine-label"></p>
-        <div class="weekday-bar" id="weekdayBar"></div>
-        <div class="time-bar" id="timeBar"></div>
-      </section>
-
-      <section class="medicines-section">
-        <h2>Remédios em estoque</h2>
-        <div id="medicineList" class="medicine-list"></div>
-        <div class="search-box">
-          <input id="searchInput" type="search" placeholder="Buscar remédio" />
-        </div>
-      </section>
-    </section>
-
-    <section id="profileSection" class="content-section hidden">
-      <div class="section-card">
-        <h2>Meu Perfil</h2>
-        <p>Veja seus dados e preferências daqui.</p>
-        <div class="profile-detail">
-          <p><strong>Nome:</strong> John Doe</p>
-          <p><strong>Plano:</strong> Padrão</p>
-          <p><strong>Contatos:</strong> +55 11 99999-9999</p>
-        </div>
+    <section class="content-section">
+      <div class="section-header">
+        <h2>Meus Remédios</h2>
+        <button id="addMedicineBtn" class="btn-add">+ Adicionar</button>
       </div>
-    </section>
 
-    <section id="agendaSection" class="content-section hidden">
-      <div class="section-card">
-        <div class="agenda-header">
-          <div>
-            <h2>Agenda deste mês</h2>
-            <p id="agendaMonthLabel"></p>
-          </div>
-        </div>
-        <div id="calendar" class="calendar"></div>
-        <div id="selectedDayInfo" class="selected-day-info"></div>
+      <div id="medicineList" class="medicine-grid"></div>
+
+      <div class="search-box">
+        <input id="searchInput" type="search" placeholder="Buscar remédio..." />
       </div>
     </section>
   </main>
 
+  <!-- MODAL PARA ADICIONAR/EDITAR REMÉDIO -->
+  <div id="medicineModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Adicionar Remédio</h2>
+        <button class="btn-close" id="closeModalBtn">&times;</button>
+      </div>
+
+      <form id="medicineForm" class="medicine-form">
+        <div class="form-group">
+          <label for="medicineName">Nome do Remédio *</label>
+          <input type="text" id="medicineName" required placeholder="Ex: Losartana" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="medicineStock">Quantidade em Casa (un.) *</label>
+            <input type="number" id="medicineStock" required min="0" placeholder="30" />
+          </div>
+
+          <div class="form-group">
+            <label for="medicineDosage">Dose por Tomada (un.) *</label>
+            <input type="number" id="medicineDosage" required min="1" value="1" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="medicineTime">Horário da Tomada *</label>
+          <input type="time" id="medicineTime" required />
+        </div>
+
+        <div class="form-group">
+          <label for="medicineDays">Dias por Semana *</label>
+          <div class="days-selector">
+            <label><input type="checkbox" value="1" class="day-checkbox" /> Seg</label>
+            <label><input type="checkbox" value="2" class="day-checkbox" /> Ter</label>
+            <label><input type="checkbox" value="3" class="day-checkbox" /> Qua</label>
+            <label><input type="checkbox" value="4" class="day-checkbox" /> Qui</label>
+            <label><input type="checkbox" value="5" class="day-checkbox" /> Sex</label>
+            <label><input type="checkbox" value="6" class="day-checkbox" /> Sáb</label>
+            <label><input type="checkbox" value="0" class="day-checkbox" /> Dom</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="medicineDaysToTake">Pretende tomar por quantos dias?</label>
+          <input type="number" id="medicineDaysToTake" min="1" placeholder="30" />
+          <small>Deixe em branco para cálculo automático baseado na dose</small>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Remédio</button>
+        </div>
+
+        <button type="button" class="btn-danger" id="deleteBtn" style="display: none;">Deletar Remédio</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE DETALHES DO REMÉDIO -->
+  <div id="detailsModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="detailsTitle"></h2>
+        <button class="btn-close" id="closeDetailsBtn">&times;</button>
+      </div>
+
+      <div id="medicineDetails" class="medicine-details">
+        <!-- Preenchido por JS -->
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" id="editBtn">Editar</button>
+        <button class="btn-primary" id="consumeBtn">Consumir 1 Dose</button>
+      </div>
+    </div>
+  </div>
+
   <nav class="bottom-nav">
-    <button class="nav-item active" data-target="homeSection">Início</button>
-    <button class="nav-item" data-target="profileSection">Perfil</button>
-    <button class="nav-item" data-target="agendaSection">Agenda</button>
+    <a href="index.html" class="nav-item active">Início</a>
+    <a href="profile.html" class="nav-item">Perfil</a>
+    <a href="agenda.html" class="nav-item">Agenda</a>
   </nav>
 
-  <template id="medicineCardTemplate">
-    <article class="medicine-card">
-      <div class="medicine-emoji">💊</div>
-      <div class="medicine-content">
-        <strong class="medicine-name"></strong>
-        <span class="medicine-stock"></span>
-      </div>
-    </article>
-  </template>
-
-  <script src="script.js"></script>
+  <script src="js/shared.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/home.js"></script>
 </body>
 </html>
