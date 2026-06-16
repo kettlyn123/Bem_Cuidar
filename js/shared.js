@@ -141,16 +141,34 @@ function formatDateShort(date) {
 function updateDateTime() {
   const dateDisplay = document.getElementById('dateDisplay');
   const timeDisplay = document.getElementById('timeDisplay');
+  const statusBarTime = document.getElementById('statusBarTime');
+  const todayLabel = document.getElementById('todayLabel');
   
-  if (dateDisplay && timeDisplay) {
-    const now = new Date();
-    dateDisplay.textContent = formatDate(now);
-    timeDisplay.textContent = formatTime(now);
-    setTimeout(updateDateTime, 1000);
-  }
+  const now = new Date();
+  
+  if (dateDisplay) dateDisplay.textContent = formatDate(now);
+  if (timeDisplay) timeDisplay.textContent = formatTime(now);
+  if (statusBarTime) statusBarTime.textContent = formatTime(now);
+  if (todayLabel) todayLabel.textContent = formatDate(now);
+  
+  setTimeout(updateDateTime, 1000);
 }
 
 // ========== NOMES DOS DIAS ==========
 
 const dayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 const dayNamesShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+// ========== NOTIFICAÇÃO EM TELA ==========
+function showNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => notification.classList.add('show'), 10);
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}

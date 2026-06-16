@@ -7,119 +7,161 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <main class="app-shell">
-    <header class="header">
-      <div class="profile">
-        <div class="avatar">JD</div>
-        <div>
-          <p>Olá, bem-vindo</p>
-          <h1>John Doe</h1>
+  <div class="phone-container">
+    <div class="phone-frame">
+      <!-- Notch do Celular -->
+      <div class="phone-notch"></div>
+      
+      <!-- Barra de Status do Celular -->
+      <div class="phone-status-bar">
+        <span class="status-time" id="statusBarTime">08:00</span>
+        <div class="status-icons">
+          <span>📶</span>
+          <span>📶</span>
+          <span>🔋</span>
         </div>
       </div>
-      <div class="date-time-row">
-        <span id="dateDisplay" class="date-display"></span>
-        <span id="timeDisplay" class="time-display"></span>
+
+      <!-- Tela do Celular -->
+      <div class="phone-screen">
+        <main class="app-shell">
+          <header class="header">
+            <div class="profile">
+              <div class="avatar">JD</div>
+              <div>
+                <p>Olá, bem-vindo</p>
+                <h1>John Doe</h1>
+              </div>
+            </div>
+            <div class="date-time-row">
+              <span id="dateDisplay" class="date-display"></span>
+              <span id="timeDisplay" class="time-display"></span>
+            </div>
+          </header>
+
+          <section class="content-section">
+            <!-- Próximas Tomadas (Hoje) -->
+            <div class="section-card">
+              <div class="agenda-header">
+                <div>
+                  <h2>Próximas Tomadas</h2>
+                  <p id="todayLabel"></p>
+                </div>
+              </div>
+              <div id="upcomingMedicines" class="medicine-grid" style="margin-top: 12px;"></div>
+            </div>
+
+            <!-- Meus Remédios (Geral) -->
+            <div class="section-card">
+              <div class="section-header">
+                <h2>Meus Remédios</h2>
+                <button id="addMedicineBtn" class="btn-add">+ Adicionar</button>
+              </div>
+
+              <div class="search-box">
+                <input id="searchInput" type="search" placeholder="Buscar remédio..." />
+              </div>
+
+              <div id="medicineList" class="medicine-grid" style="margin-top: 16px;"></div>
+            </div>
+          </section>
+        </main>
       </div>
-    </header>
 
-    <section class="content-section">
-      <div class="section-header">
-        <h2>Meus Remédios</h2>
-        <button id="addMedicineBtn" class="btn-add">+ Adicionar</button>
-      </div>
-
-      <div id="medicineList" class="medicine-grid"></div>
-
-      <div class="search-box">
-        <input id="searchInput" type="search" placeholder="Buscar remédio..." />
-      </div>
-    </section>
-  </main>
-
-  <!-- MODAL PARA ADICIONAR/EDITAR REMÉDIO -->
-  <div id="medicineModal" class="modal hidden">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modalTitle">Adicionar Remédio</h2>
-        <button class="btn-close" id="closeModalBtn">&times;</button>
-      </div>
-
-      <form id="medicineForm" class="medicine-form">
-        <div class="form-group">
-          <label for="medicineName">Nome do Remédio *</label>
-          <input type="text" id="medicineName" required placeholder="Ex: Losartana" />
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="medicineStock">Quantidade em Casa (un.) *</label>
-            <input type="number" id="medicineStock" required min="0" placeholder="30" />
+      <!-- Modais Internos do Celular (slide-up dentro da moldura) -->
+      <!-- MODAL PARA ADICIONAR/EDITAR REMÉDIO -->
+      <div id="medicineModal" class="modal hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 id="modalTitle">Adicionar Remédio</h2>
+            <button class="btn-close" id="closeModalBtn">&times;</button>
           </div>
 
-          <div class="form-group">
-            <label for="medicineDosage">Dose por Tomada (un.) *</label>
-            <input type="number" id="medicineDosage" required min="1" value="1" />
+          <form id="medicineForm" class="medicine-form">
+            <div class="form-group">
+              <label for="medicineName">Nome do Remédio *</label>
+              <input type="text" id="medicineName" required placeholder="Ex: Losartana" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="medicineStock">Quantidade em Casa (un.) *</label>
+                <input type="number" id="medicineStock" required min="0" placeholder="30" />
+              </div>
+
+              <div class="form-group">
+                <label for="medicineDosage">Dose por Tomada (un.) *</label>
+                <input type="number" id="medicineDosage" required min="1" value="1" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="medicineTime">Horário da Tomada *</label>
+              <input type="time" id="medicineTime" required />
+            </div>
+
+            <div class="form-group">
+              <label for="medicineDays">Dias por Semana *</label>
+              <div class="days-selector">
+                <label><input type="checkbox" value="1" class="day-checkbox" /> Seg</label>
+                <label><input type="checkbox" value="2" class="day-checkbox" /> Ter</label>
+                <label><input type="checkbox" value="3" class="day-checkbox" /> Qua</label>
+                <label><input type="checkbox" value="4" class="day-checkbox" /> Qui</label>
+                <label><input type="checkbox" value="5" class="day-checkbox" /> Sex</label>
+                <label><input type="checkbox" value="6" class="day-checkbox" /> Sáb</label>
+                <label><input type="checkbox" value="0" class="day-checkbox" /> Dom</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="medicineDaysToTake">Pretende tomar por quantos dias?</label>
+              <input type="number" id="medicineDaysToTake" min="1" placeholder="30" />
+              <small>Deixe em branco para cálculo automático</small>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+              <button type="submit" class="btn-primary">Salvar</button>
+            </div>
+
+            <button type="button" class="btn-danger" id="deleteBtn" style="display: none;">Deletar Remédio</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- MODAL DE DETALHES DO REMÉDIO -->
+      <div id="detailsModal" class="modal hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 id="detailsTitle"></h2>
+            <button class="btn-close" id="closeDetailsBtn">&times;</button>
+          </div>
+
+          <div id="medicineDetails" class="medicine-details">
+            <!-- Preenchido por JS -->
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn-secondary" id="editBtn">Editar</button>
+            <button class="btn-primary" id="consumeBtn">Tomar Dose</button>
+          </div>
+          <div class="modal-delete-area">
+            <button class="btn-danger" id="deleteFromDetailsBtn">🗑️ Excluir Remédio</button>
           </div>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label for="medicineTime">Horário da Tomada *</label>
-          <input type="time" id="medicineTime" required />
-        </div>
+      <!-- Barra de Navegação Inferior -->
+      <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">Início</a>
+        <a href="profile.html" class="nav-item">Perfil</a>
+        <a href="agenda.html" class="nav-item">Agenda</a>
+      </nav>
 
-        <div class="form-group">
-          <label for="medicineDays">Dias por Semana *</label>
-          <div class="days-selector">
-            <label><input type="checkbox" value="1" class="day-checkbox" /> Seg</label>
-            <label><input type="checkbox" value="2" class="day-checkbox" /> Ter</label>
-            <label><input type="checkbox" value="3" class="day-checkbox" /> Qua</label>
-            <label><input type="checkbox" value="4" class="day-checkbox" /> Qui</label>
-            <label><input type="checkbox" value="5" class="day-checkbox" /> Sex</label>
-            <label><input type="checkbox" value="6" class="day-checkbox" /> Sáb</label>
-            <label><input type="checkbox" value="0" class="day-checkbox" /> Dom</label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="medicineDaysToTake">Pretende tomar por quantos dias?</label>
-          <input type="number" id="medicineDaysToTake" min="1" placeholder="30" />
-          <small>Deixe em branco para cálculo automático baseado na dose</small>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
-          <button type="submit" class="btn-primary">Salvar Remédio</button>
-        </div>
-
-        <button type="button" class="btn-danger" id="deleteBtn" style="display: none;">Deletar Remédio</button>
-      </form>
+      <!-- Indicador Home do Celular -->
+      <div class="phone-home-indicator"></div>
     </div>
   </div>
-
-  <!-- MODAL DE DETALHES DO REMÉDIO -->
-  <div id="detailsModal" class="modal hidden">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="detailsTitle"></h2>
-        <button class="btn-close" id="closeDetailsBtn">&times;</button>
-      </div>
-
-      <div id="medicineDetails" class="medicine-details">
-        <!-- Preenchido por JS -->
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-secondary" id="editBtn">Editar</button>
-        <button class="btn-primary" id="consumeBtn">Consumir 1 Dose</button>
-      </div>
-    </div>
-  </div>
-
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-item active">Início</a>
-    <a href="profile.html" class="nav-item">Perfil</a>
-    <a href="agenda.html" class="nav-item">Agenda</a>
-  </nav>
 
   <script src="js/shared.js"></script>
   <script src="js/notifications.js"></script>

@@ -11,6 +11,7 @@ const closeModalBtn = document.getElementById('closeModalBtn');
 const closeDetailsBtn = document.getElementById('closeDetailsBtn');
 const cancelBtn = document.getElementById('cancelBtn');
 const deleteBtn = document.getElementById('deleteBtn');
+const deleteFromDetailsBtn = document.getElementById('deleteFromDetailsBtn');
 const editBtn = document.getElementById('editBtn');
 const consumeBtn = document.getElementById('consumeBtn');
 
@@ -42,6 +43,82 @@ function renderMedicines(filterText = '') {
     const card = createMedicineCard(medicine);
     medicineList.appendChild(card);
   });
+}
+
+function renderUpcomingMedicines() {
+  const upcomingMedicines = document.getElementById('upcomingMedicines');
+  const todayLabel = document.getElementById('todayLabel');
+  if (!upcomingMedicines) return;
+
+  const now = new Date();
+  const currentDay = now.getDay();
+  const medicines = db.getAllMedicines();
+
+  // Filtrar medicamentos para hoje
+  const todayMedicines = medicines.filter(m => 
+    m.daysOfWeek.includes(currentDay)
+  );
+
+  if (todayLabel) {
+    todayLabel.textContent = formatDate(now);
+  }
+
+  if (todayMedicines.length === 0) {
+    upcomingMedicines.innerHTML = '<p class="empty-list">Nenhum medicamento agendado para hoje.</p>';
+  } else {
+    upcomingMedicines.innerHTML = '';
+    todayMedicines.sort((a, b) => a.time.localeCompare(b.time));
+    todayMedicines.forEach(medicine => {
+      const card = createUpcomingCard(medicine);
+      upcomingMedicines.appendChild(card);
+    });
+  }
+}
+
+function createUpcomingCard(medicine) {
+  const card = document.createElement('div');
+  card.className = 'medicine-card';
+
+  const daysRemaining = db.getDaysRemaining(medicine);
+  const isLow = db.isRunningLow(medicine);
+  const isOut = db.isOutOfStock(medicine);
+
+  let statusClass = '';
+  let statusText = '';
+  if (isOut) {
+    statusClass = 'out-of-stock';
+    statusText = 'SEM ESTOQUE';
+  } else if (isLow) {
+    statusClass = 'running-low';
+    statusText = `ACABANDO`;
+  } else {
+    statusClass = 'ok';
+    statusText = `${daysRemaining}d`;
+  }
+
+  card.innerHTML = `
+    <div class="card-header">
+      <h3>${medicine.name}</h3>
+      <span class="status ${statusClass}">${statusText}</span>
+    </div>
+    <div class="card-body">
+      <p class="card-info">
+        <span class="label">Horário:</span> 
+        <span class="value">${medicine.time}</span>
+      </p>
+      <p class="card-info">
+        <span class="label">Dose:</span> 
+        <span class="value">${medicine.dosage} unidade(s)</span>
+      </p>
+      <p class="card-info">
+        <span class="label">Estoque:</span> 
+        <span class="value">${medicine.stock} unidades</span>
+      </p>
+    </div>
+  `;
+
+  card.addEventListener('click', () => openDetailsModal(medicine));
+  return card;
 }
 
 function createMedicineCard(medicine) {
@@ -232,7 +309,26 @@ deleteBtn.addEventListener('click', () => {
     db.deleteMedicine(currentMedicineId);
     closeAddModal();
     renderMedicines(searchInput.value);
-    showNotification('Remédio deletado!');
+    renderUpcomingMedicines();
+    showNotification('Remédio deletado com sucesso!');
+  }
+});
+
+// Botão de deletar diretamente do modal de detalhes
+deleteFromDetailsBtn.addEventListener('click', () => {
+  const medicine = db.getMedicineById(currentMedicineId);
+  if (!medicine) return;
+
+  const confirmMsg = medicine.stock === 0
+    ? `"${medicine.name}" está sem estoque. Deseja excluí-lo definitivamente?`
+    : `Tem certeza que deseja excluir "${medicine.name}"? Esta ação não pode ser desfeita.`;
+
+  if (confirm(confirmMsg)) {
+    db.deleteMedicine(currentMedicineId);
+    closeDetailsModal();
+    renderMedicines(searchInput.value);
+    renderUpcomingMedicines();
+    showNotification(`"${medicine.name}" foi excluído com sucesso.`);
   }
 });
 
@@ -257,21 +353,6 @@ searchInput.addEventListener('input', () => {
   renderMedicines(searchInput.value);
 });
 
-// ========== NOTIFICAÇÕES ==========
-
-function showNotification(message) {
-  const notification = document.createElement('div');
-  notification.className = 'notification';
-  notification.textContent = message;
-  document.body.appendChild(notification);
-  
-  setTimeout(() => notification.classList.add('show'), 10);
-  setTimeout(() => {
-    notification.classList.remove('show');
-    setTimeout(() => notification.remove(), 300);
-  }, 3000);
-}
-
 // ========== EVENT LISTENERS ==========
 
 addMedicineBtn.addEventListener('click', openAddModal);
@@ -284,3 +365,9 @@ editBtn.addEventListener('click', () => openEditModal(currentMedicineId));
 
 updateDateTime();
 renderMedicines();
+renderUpcomingMedicines();
+
+// Atualizar a cada minuto
+setInterval(() => {
+  renderUpcomingMedicines();
+}, 60000);
