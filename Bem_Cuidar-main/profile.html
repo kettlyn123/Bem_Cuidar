@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Perfil - Bem Cuidar</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="phone-container">
+    <div class="phone-frame">
+      <!-- Notch do Celular -->
+      <div class="phone-notch"></div>
+      
+      <!-- Barra de Status do Celular -->
+      <div class="phone-status-bar">
+        <span class="status-time" id="statusBarTime">08:00</span>
+        <div class="status-icons">
+          <span>📶</span>
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <!-- Tela do Celular -->
+      <div class="phone-screen">
+        <main class="app-shell">
+          <header class="header">
+            <div class="profile">
+              <div class="avatar">JD</div>
+              <div>
+                <p>Olá, bem-vindo</p>
+                <h1>John Doe</h1>
+              </div>
+            </div>
+            <div class="date-time-row">
+              <span id="dateDisplay" class="date-display"></span>
+              <span id="timeDisplay" class="time-display"></span>
+            </div>
+          </header>
+
+          <section class="content-section">
+            <!-- Informações do Perfil -->
+            <div class="section-card">
+              <h2>Meu Perfil</h2>
+              <p style="color: var(--muted); margin-bottom: 16px;">Veja seus dados e preferências daqui.</p>
+              <div class="profile-detail">
+                <p><strong>Nome:</strong> John Doe</p>
+                <p><strong>Plano:</strong> Padrão</p>
+                <p><strong>Contatos:</strong> +55 11 99999-9999</p>
+              </div>
+            </div>
+
+            <!-- Sobre o App -->
+            <div class="section-card">
+              <h2>Sobre o Bem Cuidar</h2>
+              <p style="line-height: 1.5;">Bem Cuidar é um aplicativo para ajudá-lo a gerenciar seus medicamentos e receber lembretes nos horários corretos.</p>
+              <p style="margin-top: 12px;"><strong>Versão:</strong> 1.0.0</p>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <!-- Barra de Navegação Inferior -->
+      <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">Início</a>
+        <a href="profile.html" class="nav-item active">Perfil</a>
+        <a href="agenda.html" class="nav-item">Agenda</a>
+      </nav>
+
+      <!-- Indicador Home do Celular -->
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+  <script src="js/shared.js"></script>
+  <script>
+    updateDateTime();
+  </script>
+</body>
+</html>
