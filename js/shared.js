@@ -1,111 +1,133 @@
-// ========== BANCO DE DADOS COM LOCALSTORAGE ==========
+// ========== BANCO DE DADOS COM FIREBASE FIRESTORE (por usuário) ==========
 
-const userProfile = {
-  name: 'John Doe',
-  plan: 'Padrão',
-  phone: '+55 11 99999-9999'
-};
+import {
+  firestoreDB,
+  auth,
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  orderBy
+} from './firebase.js';
 
-// Inicializar dados padrão
-const defaultMedicines = [
-  { 
-    id: 1,
-    name: 'Losartana', 
-    stock: 30,
-    dosage: 1,
-    daysToTake: 30,
-    daysOfWeek: [1, 2, 3, 4, 5],
-    time: '08:00',
-    lastUpdated: new Date().toISOString()
-  },
-  { 
-    id: 2,
-    name: 'Loratadina', 
-    stock: 20,
-    dosage: 1,
-    daysToTake: 15,
-    daysOfWeek: [1, 3, 5],
-    time: '09:00',
-    lastUpdated: new Date().toISOString()
-  }
-];
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Sistema de armazenamento
+// ========== CLASSE DO BANCO DE DADOS ==========
+
 class MedicineDatabase {
-  constructor() {
-    this.storageKey = 'bem_cuidar_medicines';
-    this.notificationsKey = 'bem_cuidar_notifications';
-    this.initializeStorage();
+  // Retorna a coleção do usuário logado: users/{uid}/medicines
+  _getCollection() {
+    const user = auth.currentUser;
+    if (!user) throw new Error('Usuário não autenticado.');
+    return collection(firestoreDB, 'users', user.uid, 'medicines');
   }
 
-  initializeStorage() {
-    if (!localStorage.getItem(this.storageKey)) {
-      localStorage.setItem(this.storageKey, JSON.stringify(defaultMedicines));
-    }
-  }
-
-  getAllMedicines() {
+  // Buscar todos os medicamentos do usuário
+  async getAllMedicines() {
     try {
-      return JSON.parse(localStorage.getItem(this.storageKey)) || [];
+      const col = this._getCollection();
+      const q = query(col, orderBy('lastUpdated', 'desc'));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     } catch (e) {
       console.error('Erro ao carregar medicamentos:', e);
       return [];
     }
   }
 
-  getMedicineById(id) {
-    const medicines = this.getAllMedicines();
-    return medicines.find(m => m.id === id);
-  }
-
-  saveMedicine(medicine) {
-    const medicines = this.getAllMedicines();
-    medicine.lastUpdated = new Date().toISOString();
-    
-    const index = medicines.findIndex(m => m.id === medicine.id);
-    if (index > -1) {
-      medicines[index] = medicine;
-    } else {
-      medicine.id = Date.now();
-      medicines.push(medicine);
+  // Buscar medicamento por ID
+  async getMedicineById(id) {
+    try {
+      const user = auth.currentUser;
+      if (!user) return null;
+      const docRef = doc(firestoreDB, 'users', user.uid, 'medicines', String(id));
+      const snap = await getDoc(docRef);
+      if (snap.exists()) return { id: snap.id, ...snap.data() };
+      return null;
+    } catch (e) {
+      console.error('Erro ao buscar medicamento:', e);
+      return null;
     }
-    
-    localStorage.setItem(this.storageKey, JSON.stringify(medicines));
-    return medicine;
   }
 
-  deleteMedicine(id) {
-    const medicines = this.getAllMedicines();
-    const filtered = medicines.filter(m => m.id !== id);
-    localStorage.setItem(this.storageKey, JSON.stringify(filtered));
+  // Salvar ou atualizar medicamento
+  async saveMedicine(medicine) {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error('Usuário não autenticado.');
+      const id = medicine.id ? String(medicine.id) : String(Date.now());
+      const docRef = doc(firestoreDB, 'users', user.uid, 'medicines', id);
+
+      const data = {
+        name:       medicine.name,
+        stock:      medicine.stock,
+        dosage:     medicine.dosage,
+        time:       medicine.time,
+        daysOfWeek: medicine.daysOfWeek,
+        daysToTake: medicine.daysToTake ?? null,
+        lastUpdated: serverTimestamp()
+      };
+
+      await setDoc(docRef, data, { merge: true });
+      return { id, ...data };
+    } catch (e) {
+      console.error('Erro ao salvar medicamento:', e);
+      throw e;
+    }
   }
 
-  // Calcular próxima data de término
+  // Deletar medicamento
+  async deleteMedicine(id) {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error('Usuário não autenticado.');
+      const docRef = doc(firestoreDB, 'users', user.uid, 'medicines', String(id));
+      await deleteDoc(docRef);
+    } catch (e) {
+      console.error('Erro ao deletar medicamento:', e);
+      throw e;
+    }
+  }
+
+  // Escutar mudanças em tempo real (retorna unsubscribe fn)
+  onMedicinesChange(callback) {
+    const user = auth.currentUser;
+    if (!user) return () => {};
+    const col = collection(firestoreDB, 'users', user.uid, 'medicines');
+    const q = query(col, orderBy('lastUpdated', 'desc'));
+    return onSnapshot(q, (snapshot) => {
+      const medicines = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      callback(medicines);
+    });
+  }
+
+  // ========== CÁLCULOS LOCAIS ==========
+
   calculateEndDate(medicine) {
     const now = new Date();
     const daysPerWeek = medicine.daysOfWeek.length;
-    const dosesPerWeek = daysPerWeek; // 1 dose por dia nos dias marcados
-    const weeksNeeded = Math.ceil((medicine.stock / medicine.dosage) / dosesPerWeek);
+    const weeksNeeded = Math.ceil((medicine.stock / medicine.dosage) / daysPerWeek);
     const endDate = new Date(now);
     endDate.setDate(endDate.getDate() + (weeksNeeded * 7));
     return endDate;
   }
 
-  // Calcular dias restantes
   getDaysRemaining(medicine) {
     const endDate = this.calculateEndDate(medicine);
     const now = new Date();
-    const diff = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
-    return Math.max(0, diff);
+    return Math.max(0, Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)));
   }
 
-  // Verificar se está acabando (menos de 7 dias)
   isRunningLow(medicine) {
-    const daysRemaining = this.getDaysRemaining(medicine);
-    return daysRemaining <= 7 && daysRemaining > 0;
+    const d = this.getDaysRemaining(medicine);
+    return d <= 7 && d > 0;
   }
 
-  // Verificar se acabou
   isOutOfStock(medicine) {
     return medicine.stock <= 0;
   }
@@ -116,47 +138,30 @@ const db = new MedicineDatabase();
 // ========== FUNÇÕES DE FORMATAÇÃO ==========
 
 function formatDate(date) {
-  return date.toLocaleDateString('pt-BR', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long'
-  });
+  return date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 }
-
 function formatTime(date) {
-  return date.toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
-
 function formatDateShort(date) {
-  return date.toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
 function updateDateTime() {
-  const dateDisplay = document.getElementById('dateDisplay');
-  const timeDisplay = document.getElementById('timeDisplay');
+  const dateDisplay  = document.getElementById('dateDisplay');
+  const timeDisplay  = document.getElementById('timeDisplay');
   const statusBarTime = document.getElementById('statusBarTime');
-  const todayLabel = document.getElementById('todayLabel');
-  
+  const todayLabel   = document.getElementById('todayLabel');
   const now = new Date();
-  
-  if (dateDisplay) dateDisplay.textContent = formatDate(now);
-  if (timeDisplay) timeDisplay.textContent = formatTime(now);
+  if (dateDisplay)   dateDisplay.textContent   = formatDate(now);
+  if (timeDisplay)   timeDisplay.textContent   = formatTime(now);
   if (statusBarTime) statusBarTime.textContent = formatTime(now);
-  if (todayLabel) todayLabel.textContent = formatDate(now);
-  
+  if (todayLabel)    todayLabel.textContent    = formatDate(now);
   setTimeout(updateDateTime, 1000);
 }
 
 // ========== NOMES DOS DIAS ==========
-
-const dayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+const dayNames      = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 const dayNamesShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
 // ========== NOTIFICAÇÃO EM TELA ==========
@@ -165,10 +170,77 @@ function showNotification(message) {
   notification.className = 'notification';
   notification.textContent = message;
   document.body.appendChild(notification);
-  
   setTimeout(() => notification.classList.add('show'), 10);
   setTimeout(() => {
     notification.classList.remove('show');
     setTimeout(() => notification.remove(), 300);
   }, 3000);
 }
+
+// ========== LOADER GLOBAL ==========
+function showLoader(visible) {
+  let loader = document.getElementById('globalLoader');
+  if (!loader) {
+    loader = document.createElement('div');
+    loader.id = 'globalLoader';
+    loader.style.cssText = `
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.4); display:flex; align-items:center;
+      justify-content:center; z-index:9999; backdrop-filter:blur(4px);
+    `;
+    loader.innerHTML = `<div style="
+      background:#fff; color:#1b2737;
+      padding:24px 32px; border-radius:16px; text-align:center;
+      box-shadow:0 8px 32px rgba(0,0,0,0.15);
+    ">
+      <div style="font-size:28px; margin-bottom:10px;">⏳</div>
+      <p style="margin:0; font-size:14px; font-weight:600;">Carregando...</p>
+    </div>`;
+    document.body.appendChild(loader);
+  }
+  loader.style.display = visible ? 'flex' : 'none';
+}
+
+// ========== INJETAR NOME DO USUÁRIO NO HEADER ==========
+function injectUserHeader() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  // Iniciais para o avatar
+  const avatarEl = document.querySelector('.avatar');
+  const nameEl   = document.querySelector('.profile h1');
+  const greetEl  = document.querySelector('.profile p');
+
+  const name     = user.displayName || user.email;
+  const initials = name.split(' ').slice(0, 2).map(n => n[0].toUpperCase()).join('');
+
+  if (avatarEl) avatarEl.textContent = initials;
+  if (nameEl)   nameEl.textContent   = user.displayName || 'Usuário';
+  if (greetEl)  greetEl.textContent  = `Olá, bem-vindo(a) 👋`;
+}
+
+// ========== GUARD DE AUTENTICAÇÃO + INICIALIZAR APP ==========
+function initProtectedPage(onReady) {
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+    injectUserHeader();
+    onReady(user);
+  });
+}
+
+export {
+  db,
+  formatDate,
+  formatTime,
+  formatDateShort,
+  updateDateTime,
+  dayNames,
+  dayNamesShort,
+  showNotification,
+  showLoader,
+  injectUserHeader,
+  initProtectedPage
+};
