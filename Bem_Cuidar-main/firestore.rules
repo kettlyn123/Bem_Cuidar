@@ -1,0 +1,41 @@
+# ============================================================
+# REGRAS DE SEGURANÇA DO FIRESTORE - BEM CUIDAR
+# ============================================================
+# Acesse: https://console.firebase.google.com/project/bem-cuidar-b7aa0/firestore/rules
+# Cole o conteúdo abaixo na aba "Rules" e clique em "Publish"
+# ============================================================
+
+# FASE ATUAL — PRODUÇÃO COM AUTENTICAÇÃO
+# Cada usuário só acessa os PRÓPRIOS medicamentos.
+# Estrutura: /users/{userId}/medicines/{medicineId}
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    # Cada usuário acessa apenas sua própria sub-coleção de medicamentos
+    match /users/{userId}/medicines/{medicineId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+
+    # Bloquear todo o restante
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+# ============================================================
+# COMO APLICAR:
+# 1. Acesse https://console.firebase.google.com
+# 2. Selecione o projeto "bem-cuidar-b7aa0"
+# 3. Vá em Firestore Database → aba "Rules"
+# 4. Cole as regras acima
+# 5. Clique em "Publish"
+# ============================================================
+#
+# TAMBÉM ATIVE O FIREBASE AUTHENTICATION:
+# 1. No console Firebase → Authentication → Get started
+# 2. Ative o provedor "Email/Senha"
+# ============================================================

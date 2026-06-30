@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Criar Conta - Bem Cuidar</title>
+  <meta name="description" content="Crie sua conta no Bem Cuidar e comece a gerenciar seus medicamentos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="phone-container">
+    <div class="phone-frame">
+      <!-- Notch -->
+      <div class="phone-notch"></div>
+
+      <!-- Barra de Status -->
+      <div class="phone-status-bar">
+        <span class="status-time" id="statusBarTime">08:00</span>
+        <div class="status-icons">
+          <span>📶</span><span>📶</span><span>🔋</span>
+        </div>
+      </div>
+
+      <!-- Tela -->
+      <div class="phone-screen auth-screen">
+        <div class="auth-container">
+
+          <!-- Logo / Branding -->
+          <div class="auth-brand">
+            <div class="auth-logo">💊</div>
+            <h1 class="auth-title">Bem Cuidar</h1>
+            <p class="auth-subtitle">Crie sua conta e cuide melhor de você</p>
+          </div>
+
+          <!-- Card de Cadastro -->
+          <div class="auth-card">
+            <h2 class="auth-card-title">Criar conta grátis</h2>
+
+            <!-- Mensagem de erro -->
+            <div id="errorMsg" class="auth-error hidden"></div>
+            <!-- Mensagem de sucesso -->
+            <div id="successMsg" class="auth-success hidden"></div>
+
+            <form id="registerForm" class="auth-form">
+              <div class="auth-field">
+                <label for="registerName">Nome completo</label>
+                <div class="auth-input-wrap">
+                  <span class="auth-icon">👤</span>
+                  <input
+                    type="text"
+                    id="registerName"
+                    placeholder="Seu nome"
+                    autocomplete="name"
+                    required
+                    minlength="2"
+                  />
+                </div>
+              </div>
+
+              <div class="auth-field">
+                <label for="registerEmail">E-mail</label>
+                <div class="auth-input-wrap">
+                  <span class="auth-icon">✉️</span>
+                  <input
+                    type="email"
+                    id="registerEmail"
+                    placeholder="seu@email.com"
+                    autocomplete="email"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="auth-field">
+                <label for="registerPassword">Senha</label>
+                <div class="auth-input-wrap">
+                  <span class="auth-icon">🔒</span>
+                  <input
+                    type="password"
+                    id="registerPassword"
+                    placeholder="Mínimo 6 caracteres"
+                    autocomplete="new-password"
+                    required
+                    minlength="6"
+                  />
+                </div>
+              </div>
+
+              <div class="auth-field">
+                <label for="registerConfirm">Confirmar senha</label>
+                <div class="auth-input-wrap">
+                  <span class="auth-icon">🔐</span>
+                  <input
+                    type="password"
+                    id="registerConfirm"
+                    placeholder="Repita a senha"
+                    autocomplete="new-password"
+                    required
+                    minlength="6"
+                  />
+                </div>
+              </div>
+
+              <button type="submit" id="registerBtn" class="auth-btn-primary">
+                <span id="registerBtnText">Criar conta</span>
+                <span id="registerBtnLoader" class="btn-spinner hidden"></span>
+              </button>
+            </form>
+
+            <div class="auth-divider"><span>ou</span></div>
+
+            <p class="auth-switch">
+              Já tem conta?
+              <a href="login.html" id="goToLoginLink">Entrar agora</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Indicador Home -->
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { registerUser, redirectIfLoggedIn } from './js/auth.js';
+
+    // Redireciona para home se já estiver logado
+    redirectIfLoggedIn();
+
+    // Relógio
+    function tick() {
+      const el = document.getElementById('statusBarTime');
+      if (el) el.textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      setTimeout(tick, 1000);
+    }
+    tick();
+
+    // Formulário de cadastro
+    const form       = document.getElementById('registerForm');
+    const errorMsg   = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+    const btnText    = document.getElementById('registerBtnText');
+    const btnLoad    = document.getElementById('registerBtnLoader');
+    const btn        = document.getElementById('registerBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.classList.add('hidden');
+      successMsg.classList.add('hidden');
+
+      const name     = document.getElementById('registerName').value.trim();
+      const email    = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value;
+      const confirm  = document.getElementById('registerConfirm').value;
+
+      if (password !== confirm) {
+        errorMsg.textContent = 'As senhas não coincidem.';
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      btnText.textContent = 'Criando conta...';
+      btnLoad.classList.remove('hidden');
+      btn.disabled = true;
+
+      try {
+        await registerUser(name, email, password);
+        successMsg.textContent = '✅ Conta criada com sucesso! Redirecionando...';
+        successMsg.classList.remove('hidden');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+      } catch (err) {
+        btnText.textContent = 'Criar conta';
+        btnLoad.classList.add('hidden');
+        btn.disabled = false;
+
+        const msgs = {
+          'auth/email-already-in-use':  'Este e-mail já está cadastrado.',
+          'auth/invalid-email':         'E-mail inválido.',
+          'auth/weak-password':         'Senha fraca. Use pelo menos 6 caracteres.',
+          'auth/network-request-failed':'Sem conexão com a internet.',
+        };
+        errorMsg.textContent = msgs[err.code] || 'Erro ao criar conta. Tente novamente.';
+        errorMsg.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

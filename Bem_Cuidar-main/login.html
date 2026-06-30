@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrar - Bem Cuidar</title>
+  <meta name="description" content="Faça login no Bem Cuidar para gerenciar seus medicamentos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="phone-container">
+    <div class="phone-frame">
+      <!-- Notch -->
+      <div class="phone-notch"></div>
+
+      <!-- Barra de Status -->
+      <div class="phone-status-bar">
+        <span class="status-time" id="statusBarTime">08:00</span>
+        <div class="status-icons">
+          <span>📶</span><span>📶</span><span>🔋</span>
+        </div>
+      </div>
+
+      <!-- Tela -->
+      <div class="phone-screen auth-screen">
+        <div class="auth-container">
+
+          <!-- Logo / Branding -->
+          <div class="auth-brand">
+            <div class="auth-logo">💊</div>
+            <h1 class="auth-title">Bem Cuidar</h1>
+            <p class="auth-subtitle">Cuide dos seus medicamentos com facilidade</p>
+          </div>
+
+          <!-- Card de Login -->
+          <div class="auth-card">
+            <h2 class="auth-card-title">Entrar na conta</h2>
+
+            <!-- Mensagem de erro -->
+            <div id="errorMsg" class="auth-error hidden"></div>
+
+            <form id="loginForm" class="auth-form">
+              <div class="auth-field">
+                <label for="loginEmail">E-mail</label>
+                <div class="auth-input-wrap">
+                  <span class="auth-icon">✉️</span>
+                  <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="seu@email.com"
+                    autocomplete="email"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="auth-field">
+                <label for="loginPassword">Senha</label>
+                <div class="auth-input-wrap">
+                  <span class="auth-icon">🔒</span>
+                  <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    required
+                    minlength="6"
+                  />
+                </div>
+              </div>
+
+              <button type="submit" id="loginBtn" class="auth-btn-primary">
+                <span id="loginBtnText">Entrar</span>
+                <span id="loginBtnLoader" class="btn-spinner hidden"></span>
+              </button>
+            </form>
+
+            <div class="auth-divider"><span>ou</span></div>
+
+            <p class="auth-switch">
+              Não tem conta?
+              <a href="cadastro.html" id="goToRegisterLink">Criar conta grátis</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Indicador Home -->
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { loginUser, redirectIfLoggedIn } from './js/auth.js';
+
+    // Redireciona para home se já estiver logado
+    redirectIfLoggedIn();
+
+    // Relógio
+    function tick() {
+      const el = document.getElementById('statusBarTime');
+      if (el) el.textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      setTimeout(tick, 1000);
+    }
+    tick();
+
+    // Formulário de login
+    const form     = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const btnText  = document.getElementById('loginBtnText');
+    const btnLoad  = document.getElementById('loginBtnLoader');
+    const btn      = document.getElementById('loginBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.classList.add('hidden');
+      btnText.textContent = 'Entrando...';
+      btnLoad.classList.remove('hidden');
+      btn.disabled = true;
+
+      const email    = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        await loginUser(email, password);
+        window.location.href = 'index.html';
+      } catch (err) {
+        btnText.textContent = 'Entrar';
+        btnLoad.classList.add('hidden');
+        btn.disabled = false;
+
+        const msgs = {
+          'auth/invalid-credential':    'E-mail ou senha incorretos.',
+          'auth/user-not-found':        'Nenhuma conta com este e-mail.',
+          'auth/wrong-password':        'Senha incorreta.',
+          'auth/too-many-requests':     'Muitas tentativas. Aguarde e tente de novo.',
+          'auth/network-request-failed':'Sem conexão com a internet.',
+        };
+        errorMsg.textContent = msgs[err.code] || 'Erro ao entrar. Tente novamente.';
+        errorMsg.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
