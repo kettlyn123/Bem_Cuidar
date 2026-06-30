@@ -1,0 +1,118 @@
+📱 BEM CUIDAR - GUIA RÁPIDO DE TESTE
+=====================================
+
+🎯 COMO TESTAR O APLICATIVO
+
+1️⃣ ABRIR NO NAVEGADOR
+   - Abra o arquivo "index.html" em um navegador moderno
+   - (Chrome, Firefox, Safari, Edge)
+
+2️⃣ ADICIONAR UM MEDICAMENTO (Clique em "+ Adicionar")
+   
+   Nome do Remédio: "Losartana"
+   Quantidade em Casa: 30
+   Dose por Tomada: 1
+   Horário: 08:00
+   Dias: Segunda, Terça, Quarta, Quinta, Sexta
+   
+   ✅ Clique em "Salvar Remédio"
+
+3️⃣ TESTAR FUNCIONALIDADES
+
+   📍 PÁGINA INICIAL (Início)
+      • Veja o card do medicamento
+      • Status mostra: "X dias" (dias até acabar)
+      • Clique no card para ver detalhes
+
+   🔵 VER DETALHES
+      • Clique em um medicamento
+      • Veja todas as informações
+      • Botão "Consumir 1 Dose" reduz o estoque
+      • Botão "Editar" abre o formulário
+
+   ✏️ EDITAR MEDICAMENTO
+      • Clique em um medicamento
+      • Clique em "Editar"
+      • Mude qualquer informação
+      • Clique em "Salvar Remédio"
+
+   🔍 BUSCAR MEDICAMENTO
+      • Digite na caixa de busca "Buscar remédio..."
+      • A lista filtra automaticamente
+
+   📅 PÁGINA DE AGENDA
+      • Vê próximas tomadas de HOJE
+      • Vê histórico de TODOS os medicamentos
+
+   👤 PÁGINA DE PERFIL
+      • Seus dados e informações do app
+
+4️⃣ TESTAR CÁLCULOS
+
+   Se adicionar:
+   - 30 unidades
+   - 1 unidade por dose
+   - 5 dias por semana (Seg-Sex)
+   
+   Sistema calcula:
+   ✅ 30 doses ÷ 5 por semana = 6 semanas
+   ✅ Previsão: ~42 dias
+
+5️⃣ TESTAR STATUS
+
+   Status = cor do card:
+   🟢 VERDE (OK): Mais de 7 dias de estoque
+   🟡 AMARELO (ACABANDO): 1-7 dias de estoque
+   🔴 VERMELHO (SEM ESTOQUE): 0 unidades
+
+6️⃣ NOTIFICAÇÕES
+
+   ⚠️ Quando faltam 5 minutos para a hora:
+      • Navegador mostra notificação
+      • Clique em "Permitir" quando pedir
+
+   ⚠️ Quando estoque está baixo:
+      • Notificação de aviso
+      • Lembre-se de repor!
+
+7️⃣ DELETAR MEDICAMENTO
+
+   • Clique em um medicamento
+   • Clique em "Editar"
+   • Clique em "Deletar Remédio" (botão vermelho)
+   • Confirme a exclusão
+
+8️⃣ DADOS LOCAIS
+
+   ✅ Seus dados são salvos no navegador
+   ✅ Não precisa de internet após carregar
+   ✅ Dados persistem mesmo fechando o navegador
+   ✅ Para apagar: Limpar cache/cookies
+
+=====================================
+
+💡 DICAS
+
+• O aplicativo é responsivo - funciona em mobile!
+• Toque um medicamento para abrir seus detalhes
+• A data de previsão muda conforme consome doses
+• Use a página de Agenda para planejar suas semanas
+
+=====================================
+
+📋 ARQUIVOS DO PROJETO
+
+index.html       - Página inicial (Meus Remédios)
+profile.html     - Página de Perfil
+agenda.html      - Página de Agenda
+
+home.js          - Lógica da página inicial
+agenda.js        - Lógica da página de agenda
+notifications.js - Sistema de lembretes
+shared.js        - Banco de dados e funções comuns
+
+styles.css       - Estilos do aplicativo
+
+=====================================
+
+🎉 PRONTO! Seu aplicativo está 100% funcional!
