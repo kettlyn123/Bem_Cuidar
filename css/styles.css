@@ -463,7 +463,8 @@ body, input, button {
   display: flex;
   align-items: stretch;
   gap: 0;
-  padding: 8px 6px 12px;
+  min-height: 90px;
+  padding: 12px 10px 16px;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
   border-top: 1px solid rgba(31, 93, 232, 0.08);
@@ -477,7 +478,7 @@ body, input, button {
   border: none;
   background: transparent;
   border-radius: 14px;
-  padding: 6px 4px;
+  padding: 10px 6px;
   color: var(--muted);
   cursor: pointer;
   text-decoration: none;
@@ -485,16 +486,16 @@ body, input, button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  font-size: 0.62rem;
-  font-weight: 600;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
   letter-spacing: 0.01em;
   transition: all 0.2s ease;
   position: relative;
 }
 
 .nav-item .nav-icon {
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   line-height: 1;
   transition: transform 0.2s ease;
 }
