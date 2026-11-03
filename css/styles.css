@@ -499,6 +499,12 @@ body, input, button {
 }
 
 @media (min-width: 768px) {
+  body {
+    background: linear-gradient(160deg, #cfe8ff 0%, #daf0ff 50%, #eaf6ff 100%);
+  }
+  .phone-container {
+    background: transparent;
+  }
   .app-shell {
     max-width: 720px;
     margin: 0 auto;
@@ -513,6 +519,9 @@ body, input, button {
 }
 
 @media (min-width: 1024px) {
+  body {
+    background: linear-gradient(160deg, #bfe0ff 0%, #d4ecff 50%, #e8f5ff 100%);
+  }
   .app-shell {
     max-width: 900px;
     margin: 0 auto;
@@ -1243,4 +1252,61 @@ body {
   font-weight: 600;
   color: var(--text);
   word-break: break-all;
+}
+
+/* ================================================================
+   CARD DE CRÉDITOS - SOBRE O BEM CUIDAR
+   ================================================================ */
+.about-credits-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--primary-soft) 0%, #e0eaff 100%);
+  border: 1px solid rgba(31, 93, 232, 0.15);
+  border-radius: 16px;
+}
+
+.about-credits-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(31, 93, 232, 0.1);
+}
+
+.about-credits-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-credits-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.about-credits-names {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.about-credits-school {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.4;
 }
