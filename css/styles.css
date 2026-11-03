@@ -1019,6 +1019,30 @@ body {
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
 }
 
+.auth-credits {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-bottom: 6px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.auth-credits-tag {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6);
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
 .auth-title {
   margin: 0 0 4px;
   font-size: 1.8rem;
