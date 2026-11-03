@@ -1013,7 +1013,9 @@ body {
 
 .auth-logo {
   font-size: 48px;
-  margin-bottom: 8px;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 8px;
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
 }
 
