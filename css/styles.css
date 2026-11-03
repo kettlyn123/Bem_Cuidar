@@ -235,26 +235,23 @@ body, input, button {
   gap: 14px;
 }
 
-/* ========== PHONE CONTAINER & FRAMING ========== */
+/* ========== LAYOUT RESPONSIVO (sem simulação de celular) ========== */
 .phone-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
   min-height: 100vh;
-  padding: 20px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(180deg, #e8edff 0%, #f7fbff 100%);
   box-sizing: border-box;
 }
 
 .phone-frame {
   position: relative;
-  width: 375px;
-  height: 812px;
-  background: #f8fafc;
-  border: 12px solid #0f172a;
-  border-radius: 40px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 4px #1e293b;
-  overflow: hidden;
+  width: 100%;
+  min-height: 100vh;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -263,65 +260,31 @@ body, input, button {
   flex: 1;
   overflow-y: auto;
   position: relative;
-  padding-bottom: 0;
-  background: linear-gradient(180deg, #e8edff 0%, #f7fbff 100%);
+  background: transparent;
 }
 
 .phone-screen::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
 }
 .phone-screen::-webkit-scrollbar-track {
   background: transparent;
 }
 .phone-screen::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(31, 93, 232, 0.15);
   border-radius: 10px;
 }
 
-.phone-status-bar {
-  height: 44px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 24px 0;
-  background: transparent;
-  z-index: 101;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text);
-  pointer-events: none;
-  user-select: none;
+/* Ocultar elementos de simulação de celular */
+.phone-notch,
+.phone-status-bar,
+.phone-home-indicator {
+  display: none !important;
 }
 
 .status-icons {
   display: flex;
   gap: 6px;
   font-size: 0.8rem;
-}
-
-.phone-notch {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 110px;
-  height: 25px;
-  background: #0f172a;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-  z-index: 102;
-}
-
-.phone-home-indicator {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 5px;
-  background: #0f172a;
-  border-radius: 3px;
-  z-index: 102;
 }
 
 /* ========== CALENDÁRIO ========== */
@@ -526,27 +489,37 @@ body, input, button {
 }
 
 @media (max-width: 480px) {
-  .phone-container {
-    padding: 0;
-    background: transparent;
-  }
-  .phone-frame {
+  .bottom-nav {
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: 100%;
-    height: 100vh;
-    border: none;
     border-radius: 0;
-    box-shadow: none;
   }
-  .phone-notch,
-  .phone-home-indicator,
-  .phone-status-bar {
-    display: none;
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    max-width: 720px;
+    margin: 0 auto;
   }
   .bottom-nav {
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    width: calc(100% - 20px);
+    max-width: 720px;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    width: 720px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-shell {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .bottom-nav {
+    max-width: 900px;
+    width: 900px;
   }
 }
 
